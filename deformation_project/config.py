@@ -7,10 +7,10 @@ from typing import Tuple
 @dataclass
 class CameraConfig:
     """Camera acquisition settings."""
-    source: int | str = 0
+    source: int | str = 1  # Camo (iPhone) camera
     target_fps: int = 30
-    frame_width: int = 640
-    frame_height: int = 480
+    frame_width: int = 1280
+    frame_height: int = 720
 
 
 @dataclass

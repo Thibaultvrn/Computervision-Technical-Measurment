@@ -101,11 +101,15 @@ def process_frame(
 
 
 def run_measurement_loop(
-    source: int | str = 0
+    source: int | str = None
 ) -> None:
     """Main measurement loop with real-time visualization."""
     config = get_default_config()
     params = DetectionParams()
+    
+    # Use config source if not specified
+    if source is None:
+        source = config.camera.source
     
     cap = open_camera(
         source,
@@ -223,7 +227,7 @@ def main():
     print("  ESC = Quit")
     print("")
 
-    run_measurement_loop(source=0)
+    run_measurement_loop()  # Uses config.camera.source
 
 
 if __name__ == "__main__":
