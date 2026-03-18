@@ -34,6 +34,40 @@ def get_scale_params(frame: np.ndarray) -> Dict[str, float]:
     }
 
 
+def draw_center_crosshair(
+    frame: np.ndarray,
+    color: Tuple[int, int, int] = (0, 0, 0),
+    line_length_ratio: float = 0.03,
+    scale_params: Optional[Dict[str, float]] = None
+) -> np.ndarray:
+    """
+    Draw a small, simple crosshair at the frame center.
+
+    Args:
+        frame: Input BGR frame
+        color: BGR color for crosshair lines
+        line_length_ratio: Full line length as fraction of min frame dimension
+        scale_params: Dynamic scale parameters (computed if None)
+
+    Returns:
+        Frame with crosshair overlay
+    """
+    output = frame.copy()
+    h, w = frame.shape[:2]
+    params = scale_params or get_scale_params(frame)
+
+    cx, cy = w // 2, h // 2
+    half_len = max(6, int(min(h, w) * line_length_ratio / 2.0))
+    thickness = max(1, params["thin_thickness"])
+
+    # Horizontal short line
+    cv2.line(output, (cx - half_len, cy), (cx + half_len, cy), color, thickness)
+    # Vertical short line
+    cv2.line(output, (cx, cy - half_len), (cx, cy + half_len), color, thickness)
+
+    return output
+
+
 def get_text_position(
     frame: np.ndarray,
     x_ratio: float = 0.02,
@@ -325,6 +359,9 @@ def create_visualization(
     """
     scale_params = get_scale_params(frame)
     output = frame.copy()
+
+    # Draw simple center crosshair
+    output = draw_center_crosshair(output, color=(0, 0, 0), scale_params=scale_params)
 
     if roi is not None:
         output = draw_roi(output, roi, scale_params=scale_params)
